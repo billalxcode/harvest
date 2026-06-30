@@ -2,14 +2,21 @@ module harvest
 
 go 1.26.0
 
-require github.com/sardanioss/httpcloak v1.6.7
+require (
+	github.com/PuerkitoBio/goquery v1.12.0
+	github.com/go-playground/validator/v10 v10.30.3
+	github.com/sardanioss/httpcloak v1.6.7
+)
 
 require (
-	github.com/PuerkitoBio/goquery v1.12.0 // indirect
 	github.com/andybalholm/brotli v1.2.1 // indirect
 	github.com/andybalholm/cascadia v1.3.3 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
+	github.com/go-playground/locales v0.14.1 // indirect
+	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/klauspost/compress v1.18.6 // indirect
+	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/miekg/dns v1.1.72 // indirect
 	github.com/sardanioss/http v1.2.0 // indirect
 	github.com/sardanioss/net v1.2.6 // indirect
