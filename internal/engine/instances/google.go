@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"harvest/internal/core"
-	"harvest/internal/engine"
+	"harvest/internal/extractor/adapters"
 	"harvest/internal/parser"
 	"harvest/internal/session"
 	"net/url"
@@ -23,7 +23,7 @@ func NewGoogleEngine(config core.Config, sessionManager *session.Manager) *Googl
 	}
 }
 
-func (ge *GoogleEngine) Search(query string) (engine.SearchResult, error) {
+func (ge *GoogleEngine) Search(query string) (*core.SearchResult, error) {
 	rssURL := ge.InitializeURL(query)
 
 	client, err := ge.sessionManager.NewClient()
@@ -41,20 +41,47 @@ func (ge *GoogleEngine) Search(query string) (engine.SearchResult, error) {
 		panic(err)
 	}
 
-	fmt.Println("status", response.StatusCode)
 	body, err := response.Bytes()
 	if err != nil {
-		return engine.SearchResult{}, err
+		return nil, err
 	}
 
 	content, err := parser.Decode(body)
 	if err != nil {
-		return engine.SearchResult{}, err
+		return nil, err
 	}
 
-	fmt.Println("content", content)
+	searchResult, err := core.NewSearchResult(query, "google")
+	if err != nil {
+		return nil, err
+	}
 
-	return engine.SearchResult{}, nil
+	googleAdapter := adapters.NewGoogleAdapter(ge.sessionManager)
+	items := content.Channel.Items
+	for _, item := range items {
+		originURL, err := googleAdapter.Resolve(item.GUID)
+		if err != nil {
+			return nil, err
+		}
+
+		article, err := core.NewArticle(
+			item.Title,
+			item.Link,
+			item.GUID,
+			item.Description,
+			item.PubDate,
+			item.Source,
+			originURL)
+		if err != nil {
+			return nil, err
+		}
+		err = searchResult.AppendArticle(article)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return searchResult, nil
 }
 
 func (ge *GoogleEngine) InitializeURL(query string) string {

@@ -19,7 +19,7 @@ import (
 const googleNewsDefaultRPCID = "Fbv4je"
 const googleNewsBaseURL = "https://news.google.com"
 
-var patterns = regexp.MustCompile(`"wrb.fr","Fbv4je","\[\\{,2}"garturlres\\{,2}",\\{,2}"(https?://.*?)\\{,2}"`)
+var patterns = regexp.MustCompile(`"wrb.fr","Fbv4je","\[\\{0,2}"garturlres\\{0,2}",\\{0,2}"(https?://.*?)\\{0,2}"`)
 var defaultHeaders = http.Header{"Host": {"news.google.com"}, "Origin": {googleNewsBaseURL}, "Accept-Language": []string{"en-US"}}
 
 type Adapter struct {

@@ -14,8 +14,10 @@ type Channel struct {
 type Item struct {
 	Title       string `xml:"title"`
 	Link        string `xml:"link"`
+	GUID        string `xml:"guid"`
 	Description string `xml:"description"`
 	PubDate     string `xml:"pubDate"`
+	Source      string `xml:"source"`
 }
 
 func Decode(body []byte) (RSS, error) {

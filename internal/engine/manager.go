@@ -1,6 +1,9 @@
 package engine
 
-import "fmt"
+import (
+	"fmt"
+	"harvest/internal/core"
+)
 
 type Manager struct {
 	engines map[string]BaseEngineInstance
@@ -24,10 +27,10 @@ func (m *Manager) GetEngine(name string) (BaseEngineInstance, error) {
 	return engine, nil
 }
 
-func (m *Manager) Search(name string, query string) (SearchResult, error) {
+func (m *Manager) Search(name string, query string) (*core.SearchResult, error) {
 	engine, err := m.GetEngine(name)
 	if err != nil {
-		return SearchResult{}, err
+		return nil, err
 	}
 	return engine.Search(query)
 }
