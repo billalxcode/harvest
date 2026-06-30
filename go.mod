@@ -5,7 +5,9 @@ go 1.26.0
 require github.com/sardanioss/httpcloak v1.6.7
 
 require (
+	github.com/PuerkitoBio/goquery v1.12.0 // indirect
 	github.com/andybalholm/brotli v1.2.1 // indirect
+	github.com/andybalholm/cascadia v1.3.3 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/klauspost/compress v1.18.6 // indirect
 	github.com/miekg/dns v1.1.72 // indirect

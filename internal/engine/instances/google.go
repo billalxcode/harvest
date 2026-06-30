@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"harvest/internal/core"
 	"harvest/internal/engine"
+	"harvest/internal/parser"
 	"harvest/internal/session"
 	"net/url"
 	"time"
@@ -39,9 +40,19 @@ func (ge *GoogleEngine) Search(query string) (engine.SearchResult, error) {
 	if err != nil {
 		panic(err)
 	}
-	defer response.Close()
 
 	fmt.Println("status", response.StatusCode)
+	body, err := response.Bytes()
+	if err != nil {
+		return engine.SearchResult{}, err
+	}
+
+	content, err := parser.Decode(body)
+	if err != nil {
+		return engine.SearchResult{}, err
+	}
+
+	fmt.Println("content", content)
 
 	return engine.SearchResult{}, nil
 }
