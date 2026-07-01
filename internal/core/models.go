@@ -6,7 +6,7 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-type Article struct {
+type ResultItem struct {
 	Title       string `validate:"required,min=3"`
 	Link        string `validate:"required,url"`
 	GUID        string `validate:"required"`
@@ -17,23 +17,23 @@ type Article struct {
 }
 
 type SearchResult struct {
-	Query    string    `validate:"required"`
-	Engine   string    `validate:"required"`
-	Articles []Article `validate:"dive"`
-	Total    int       `validate:"min=0"`
+	Query  string       `validate:"required"`
+	Engine string       `validate:"required"`
+	Items  []ResultItem `validate:"dive"`
+	Total  int          `validate:"min=0"`
 }
 
 var validate = validator.New(validator.WithRequiredStructEnabled())
 
-func NewArticle(
+func NewSearchItem(
 	title string,
 	link string,
 	guid string,
 	description string,
 	pubDate string,
 	source string,
-	originURL string) (Article, error) {
-	article := Article{
+	originURL string) (*ResultItem, error) {
+	item := ResultItem{
 		Title:       title,
 		Link:        link,
 		GUID:        guid,
@@ -42,15 +42,15 @@ func NewArticle(
 		Source:      source,
 		OriginURL:   originURL,
 	}
-	err := validate.Struct(article)
+	err := validate.Struct(item)
 	if err != nil {
-		return Article{}, fmt.Errorf("invalid article: %s", err.Error())
+		return nil, fmt.Errorf("invalid item: %s", err.Error())
 	}
-	return article, nil
+	return &item, nil
 }
 
 func NewSearchResult(query string, engine string) (*SearchResult, error) {
-	result := &SearchResult{Query: query, Engine: engine, Articles: make([]Article, 0), Total: 0}
+	result := &SearchResult{Query: query, Engine: engine, Items: make([]ResultItem, 0), Total: 0}
 	err := validate.Var(result.Query, "required")
 	if err != nil {
 		return nil, fmt.Errorf("invalid query: %s", err.Error())
@@ -64,14 +64,14 @@ func NewSearchResult(query string, engine string) (*SearchResult, error) {
 	return result, nil
 }
 
-func (r *SearchResult) AppendArticle(article Article) error {
-	err := validate.Struct(article)
+func (r *SearchResult) AppendItem(item ResultItem) error {
+	err := validate.Struct(item)
 	if err != nil {
-		return fmt.Errorf("invalid article: %s", err.Error())
+		return fmt.Errorf("invalid item: %s", err.Error())
 	}
 
-	r.Articles = append(r.Articles, article)
-	r.Total = len(r.Articles)
+	r.Items = append(r.Items, item)
+	r.Total = len(r.Items)
 
 	return nil
 }

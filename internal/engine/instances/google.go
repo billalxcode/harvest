@@ -64,7 +64,7 @@ func (ge *GoogleEngine) Search(query string) (*core.SearchResult, error) {
 			return nil, err
 		}
 
-		article, err := core.NewArticle(
+		item, err := core.NewSearchItem(
 			item.Title,
 			item.Link,
 			item.GUID,
@@ -75,7 +75,7 @@ func (ge *GoogleEngine) Search(query string) (*core.SearchResult, error) {
 		if err != nil {
 			return nil, err
 		}
-		err = searchResult.AppendArticle(article)
+		err = searchResult.AppendItem(*item)
 		if err != nil {
 			return nil, err
 		}
