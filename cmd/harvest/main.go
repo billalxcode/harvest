@@ -5,6 +5,7 @@ import (
 	"harvest/internal/core"
 	"harvest/internal/engine"
 	"harvest/internal/engine/instances"
+	"harvest/internal/extractor"
 	"harvest/internal/session"
 )
 
@@ -22,11 +23,23 @@ func main() {
 	engineManager := engine.NewManager()
 	engineManager.RegisterEngine("google", googleEngine)
 
-	result, err := engineManager.Search("google", "majalengka")
+	results, err := engineManager.Search("google", "majalengka")
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(result)
-	_ = result
+	extractor_, err := extractor.NewArticleExtractor(sessionManager)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(fmt.Sprintf("Extract data from %s", results.Items[3].OriginURL))
+	content, err := extractor_.Extract(results.Items[3].OriginURL)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(content)
+
+	_ = results
 }
